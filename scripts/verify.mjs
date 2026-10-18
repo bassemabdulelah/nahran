@@ -65,7 +65,7 @@ for (const file of htmlFiles) {
   if (h1s.length > 1) problems.push(`${route}: ${h1s.length} <h1> tags (expected 1)`);
   if (!lang) problems.push(`${route}: <html> missing lang`);
   if (!dir) problems.push(`${route}: <html> missing dir`);
-  if (!is404 && noindex) problems.push(`${route}: unintended noindex on a normal page`);
+  if (!is404 && noindex && !route.endsWith("google9614e68bbe67bf18.html")) problems.push(`${route}: unintended noindex on a normal page`);
   if (is404 && !noindex) problems.push(`${route}: 404 page should be noindex`);
 
   if (title) titles.set(route, title);
@@ -110,7 +110,7 @@ for (const file of htmlFiles) {
   const alts = [...html.matchAll(/hreflang="([^"]+)" href="([^"]*)"/g)].map((m) => [m[1], m[2]]);
   const langs = alts.map(([l]) => l);
   if (!langs.includes('ar') && !langs.includes('en')) {
-    problems.push(`${route}: no hreflang pairs`);
+    if (!route.endsWith("google9614e68bbe67bf18.html")) problems.push(`${route}: no hreflang pairs`);
   }
   hreflang.set(route, alts);
 }
