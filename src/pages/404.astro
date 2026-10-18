@@ -1,0 +1,52 @@
+---
+import Seo from '../components/Seo.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ContactActions from '../components/ContactActions.astro';
+import { ROUTES } from '../config/site';
+---
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0F1A2C" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <Seo
+      title="الصفحة غير موجودة | 404"
+      description="تعذّر العثور على الصفحة المطلوبة."
+      lang="ar"
+      path="/404/"
+      canonical={false}
+      noindex={true}
+    />
+  </head>
+  <body>
+    <Header lang="ar" currentPath="/404/" alternateHref="/en/" />
+    <main id="main">
+      <section class="section" style="text-align:center">
+        <div class="container stack" style="max-width:640px; margin-inline:auto; align-items:center">
+          <span class="badge badge--navy">HTTP 404</span>
+          <p style="font-size:4rem; font-weight:900; color:var(--navy); line-height:1">404</p>
+          <h1>لم نجد هذه الصفحة</h1>
+          <p class="lede">الرابط الذي طلبته غير موجود أو تم تغييره. يمكنك العودة إلى الصفحة الرئيسية أو استعراض الخدمات.</p>
+          <div class="btn-row" style="justify-content:center">
+            <a class="btn btn--dark" href={ROUTES.home.ar}>الصفحة الرئيسية</a>
+            <a class="btn btn--outline" href={ROUTES.facades.ar}>الخدمات</a>
+            <a class="btn btn--outline" href={ROUTES.projects.ar}>الأعمال</a>
+          </div>
+          <ContactActions lang="ar" />
+          <hr style="width:100%; border:0; border-top:1px solid #e2e8f0; margin:1.5rem 0" />
+          <div dir="ltr" style="text-align:center">
+            <h2 style="font-size:1.3rem">Page not found</h2>
+            <p class="muted">The page you requested does not exist. You can go back to the homepage or the English version.</p>
+            <div class="btn-row" style="justify-content:center">
+              <a class="btn btn--outline" href="/en/">English homepage</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <Footer lang="ar" alternateHref="/en/" />
+  </body>
+</html>

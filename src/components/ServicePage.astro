@@ -1,0 +1,153 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import FaqList from '../components/FaqList.astro';
+import ContactActions from '../components/ContactActions.astro';
+import Icon from '../components/Icon.astro';
+import { ROUTES, url, type Lang } from '../config/site';
+import type { Service } from '../data/services';
+import { getService } from '../data/services';
+
+interface Props {
+  lang: Lang;
+  service: Service;
+}
+const { lang, service } = Astro.props;
+const isAr = lang === 'ar';
+const c = service[lang];
+const home = ROUTES.home[lang];
+const crumbHome = isAr ? 'الرئيسية' : 'Home';
+
+const related = service.related.map((id) => getService(id)).filter(Boolean) as Service[];
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: c.title,
+  serviceType: c.title,
+  description: c.metaDescription,
+  areaServed: { '@type': 'City', name: isAr ? 'الرياض' : 'Riyadh' },
+  provider: {
+    '@type': 'Organization',
+    name: isAr ? 'زجاج سكريت' : 'Zijaj Sekreet',
+    url: url('/'),
+  },
+  url: url(ROUTES[service.id][lang]),
+};
+---
+<BaseLayout lang={lang} title={c.metaTitle} description={c.metaDescription} routeId={service.id}>
+  <Breadcrumbs
+    lang={lang}
+    items={[
+      { label: crumbHome, href: home },
+      { label: isAr ? 'الخدمات' : 'Services', href: ROUTES.facades[lang] },
+      { label: c.title },
+    ]}
+  />
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="service-hero">
+        <div class="stack">
+          <span class="eyebrow">{service[lang].title}</span>
+          <h1 data-reveal>{c.h1}</h1>
+          {c.intro.map((p) => <p class="lede" data-reveal>{p}</p>)}
+          <div class="btn-row" style="margin-top:0.6rem">
+            <ContactActions lang={lang} />
+          </div>
+        </div>
+        <div class="svc-visual">
+          <img src={service.image} alt={c.imageAlt} width="1200" height="750" fetchpriority="high" decoding="async" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--soft">
+    <div class="container">
+      <div class="service-layout">
+        <div class="prose">
+          {c.sections.map((s) => (
+            <div class="svc-block" data-reveal>
+              <h2>{s.heading}</h2>
+              {s.paragraphs?.map((p) => <p>{p}</p>)}
+              {s.list && (
+                <ul class="info-list">
+                  {s.list.map((li) => <li>{li}</li>)}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <aside class="svc-aside">
+          <div class="aside-card">
+            <h2>{isAr ? 'تواصل بشأن هذه الخدمة' : 'Talk to us about this service'}</h2>
+            <p class="muted">{isAr
+              ? 'اتصل أو راسلنا على واتساب واذكر المقاس والصور إن أمكن.'
+              : 'Call or message on WhatsApp with the size and photos if possible.'}</p>
+            <ContactActions lang={lang} />
+          </div>
+
+          <div class="aside-card">
+            <h2>{isAr ? 'روابط مفيدة' : 'Useful links'}</h2>
+            <ul class="footer-links" style="gap:0.6rem">
+              <li><a href={ROUTES.projects[lang]}>{isAr ? 'معرض الأعمال' : 'Projects gallery'}</a></li>
+              <li><a href={ROUTES.pricing[lang]}>{isAr ? 'دليل الأسعار' : 'Price guide'}</a></li>
+              <li><a href={ROUTES.about[lang]}>{isAr ? 'من نحن' : 'About us'}</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  {c.faqs?.length > 0 && (
+    <FaqList
+      items={c.faqs}
+      lang={lang}
+      schema={true}
+      heading={isAr ? 'أسئلة شائعة' : 'Frequently asked questions'}
+    />
+  )}
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>{isAr ? 'خدمات ذات صلة' : 'Related services'}</h2>
+      </div>
+      <div class="grid grid--3">
+        {related.map((r) => (
+          <a class="card card--interactive service-card" href={ROUTES[r.id][lang]}>
+            <div class="card-media">
+              <img src={r.image} alt={r[lang].imageAlt} width="1200" height="750" loading="lazy" decoding="async" />
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">{r[lang].title}</h3>
+              <span class="card-cta">
+                {isAr ? 'التفاصيل' : 'Details'}
+                <Icon name="arrow" size={16} class="rtl-flip" />
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--soft">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <div>
+          <h2>{isAr ? `تحتاج ${c.title} في الرياض؟` : `Need ${c.title.toLowerCase()} in Riyadh?`}</h2>
+          <p>{isAr
+            ? 'اتصل بنا أو راسلنا على واتساب وسنوضّح لك الخطوة التالية.'
+            : 'Call or message us on WhatsApp and we will explain the next step.'}</p>
+        </div>
+        <ContactActions lang={lang} />
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+</BaseLayout>

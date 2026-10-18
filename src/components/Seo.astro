@@ -1,0 +1,72 @@
+---
+import { url, isDomainConfigured, BUSINESS } from '../config/site';
+
+export interface Props {
+  title: string;
+  description: string;
+  lang: 'ar' | 'en';
+  /** Site-relative path of this page, e.g. "/about/". */
+  path: string;
+  /** The path of this page in the other language. */
+  alternatePath?: string;
+  image?: string;
+  type?: string;
+  noindex?: boolean;
+  /** Emit a canonical link (disabled for the 404 page). */
+  canonical?: boolean;
+}
+
+const {
+  title,
+  description,
+  lang,
+  path,
+  alternatePath,
+  image = '/images/og-default.svg',
+  type = 'website',
+  noindex = false,
+  canonical = true,
+} = Astro.props;
+
+const emitCanonical = canonical;
+const canonicalHref = url(path);
+const alternateUrl = alternatePath ? url(alternatePath) : undefined;
+const absImage = isDomainConfigured ? url(image) : image;
+---
+<title>{title}</title>
+<meta name="description" content={description} />
+{emitCanonical && <link rel="canonical" href={canonicalHref} />}
+{noindex && <meta name="robots" content="noindex, follow" />}
+
+<!-- Alternate language versions (reciprocal) -->
+{alternateUrl && lang === 'ar' && (
+  <>
+    <link rel="alternate" hreflang="ar" href={canonicalHref} />
+    <link rel="alternate" hreflang="en" href={alternateUrl} />
+    <link rel="alternate" hreflang="x-default" href={canonicalHref} />
+  </>
+)}
+{alternateUrl && lang === 'en' && (
+  <>
+    <link rel="alternate" hreflang="en" href={canonicalHref} />
+    <link rel="alternate" hreflang="ar" href={alternateUrl} />
+    <link rel="alternate" hreflang="x-default" href={alternateUrl} />
+  </>
+)}
+
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={absImage} />
+<meta property="og:site_name" content={lang === 'ar' ? BUSINESS.nameAr : BUSINESS.nameEn} />
+<meta property="og:locale" content={lang === 'ar' ? 'ar_SA' : 'en_US'} />
+{lang === 'ar' && <meta property="og:locale:alternate" content="en_US" />}
+{lang === 'en' && <meta property="og:locale:alternate" content="ar_SA" />}
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={absImage} />

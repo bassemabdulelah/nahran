@@ -1,0 +1,79 @@
+---
+import { ROUTES, BUSINESS, whatsappHref, type Lang } from '../config/site';
+import { mainNav } from '../data/nav';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+  /** Site-relative path of the current page (with trailing slash). */
+  currentPath: string;
+  /** The equivalent page in the other language. */
+  alternateHref: string;
+}
+
+const { lang, currentPath, alternateHref } = Astro.props;
+const items = mainNav(lang);
+const isAr = lang === 'ar';
+const t = {
+  nav: isAr ? 'التنقل الرئيسي' : 'Primary',
+  menu: isAr ? 'فتح القائمة' : 'Open menu',
+  close: isAr ? 'إغلاق القائمة' : 'Close menu',
+  home: isAr ? 'الصفحة الرئيسية' : 'Home',
+  switchTo: isAr ? 'التبديل إلى English' : 'Switch to العربية',
+};
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href={ROUTES.home[lang]} aria-label={`${isAr ? 'زجاج سكريت' : 'Zijaj Sekreet'} — ${t.home}`}>
+      <span class="brand-mark" aria-hidden="true">ز</span>
+      <span class="brand-name">
+        <strong>{isAr ? 'زجاج سكريت' : 'Zijaj Sekreet'}</strong>
+        <span>{isAr ? 'الرياض' : 'Riyadh'}</span>
+      </span>
+    </a>
+
+    <nav class="main-nav" id="primary-nav" aria-label={t.nav} data-nav>
+      {items.map((item) => (
+        item.children ? (
+          <details class="nav-group">
+            <summary>
+              {item.label}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <div class="nav-group-panel">
+              {item.children.map((c) => (
+                <a href={c.href} aria-current={currentPath === c.href ? 'page' : undefined}>{c.label}</a>
+              ))}
+            </div>
+          </details>
+        ) : (
+          <a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>{item.label}</a>
+        )
+      ))}
+    </nav>
+
+    <div class="header-actions">
+      <a
+        class="lang-switch"
+        href={alternateHref}
+        hreflang={isAr ? 'en' : 'ar'}
+        lang={isAr ? 'en' : 'ar'}
+        aria-label={t.switchTo}
+      >
+        <Icon name="globe" size={16} />
+        <span>{isAr ? 'EN' : 'ع'}</span>
+      </a>
+      <a class="btn btn--sm btn--primary header-call" href={BUSINESS.telHref}>
+        <Icon name="phone" size={17} />
+        <span>{isAr ? 'اتصال' : 'Call'}</span>
+      </a>
+      <a class="btn btn--sm btn--whatsapp" href={whatsappHref(lang)} target="_blank" rel="noopener noreferrer">
+        <Icon name="whatsapp" size={17} />
+        <span>{isAr ? 'واتساب' : 'WhatsApp'}</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label={t.menu} data-nav-toggle>
+        <Icon name="menu" />
+      </button>
+    </div>
+  </div>
+</header>

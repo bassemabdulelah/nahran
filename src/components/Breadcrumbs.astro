@@ -1,0 +1,36 @@
+---
+import { url, isDomainConfigured, type Lang } from '../config/site';
+
+interface Props {
+  items: Array<{ label: string; href?: string }>;
+  lang: Lang;
+}
+
+const { lang, items } = Astro.props;
+const isAr = lang === 'ar';
+
+const itemList = items.map((it, i) => ({
+  '@type': 'ListItem',
+  position: i + 1,
+  name: it.label,
+  ...(it.href && isDomainConfigured ? { item: url(it.href) } : {}),
+}));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: itemList,
+};
+---
+<nav class="breadcrumbs" aria-label={isAr ? 'مسار التنقل' : 'Breadcrumb'}>
+  <div class="container">
+    <ol>
+      {items.map((it) => (
+        <li>
+          {it.href ? <a href={it.href}>{it.label}</a> : <span aria-current="page">{it.label}</span>}
+        </li>
+      ))}
+    </ol>
+  </div>
+</nav>
+{isDomainConfigured && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

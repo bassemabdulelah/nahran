@@ -1,0 +1,91 @@
+---
+import { ROUTES, BUSINESS, whatsappHref, type Lang } from '../config/site';
+import { SERVICES } from '../data/services';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+  /** Equivalent page in the other language, if one exists. */
+  alternateHref?: string;
+}
+
+const { lang, alternateHref } = Astro.props;
+const isAr = lang === 'ar';
+const year = new Date().getFullYear();
+
+const serviceLabel = (id: string) =>
+  ({ facades: 'واجهات زجاج سكريت', doors: 'أبواب زجاج سكريت', partitions: 'قواطع مكاتب زجاجية', showers: 'شاورات وكبائن حمامات', rooms: 'غرف زجاجية', railings: 'درابزين زجاج', mirrors: 'مرايا', repair: 'صيانة وإصلاح الزجاج' } as Record<string, string>)[id];
+
+const serviceLabelEn = (id: string) =>
+  ({ facades: 'Glass Facades', doors: 'Glass Doors', partitions: 'Office Partitions', showers: 'Shower Enclosures', rooms: 'Glass Rooms', railings: 'Glass Railings', mirrors: 'Mirrors', repair: 'Maintenance & Repair' } as Record<string, string>)[id];
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href={ROUTES.home[lang]} style="color:#fff">
+          <span class="brand-mark" aria-hidden="true">ز</span>
+          <span class="brand-name">
+            <strong>{isAr ? 'زجاج سكريت' : 'Zijaj Sekreet'}</strong>
+            <span>{isAr ? 'الرياض' : 'Riyadh'}</span>
+          </span>
+        </a>
+        <p class="footer-about" style="margin-top:1rem">
+          {isAr
+            ? 'خدمات تفصيل وتركيب الزجاج السكريت في الرياض: واجهات، أبواب، قواطع، شاورات، درابزين، مرايا وصيانة.'
+            : 'Tempered glass supply and installation across Riyadh: facades, doors, partitions, showers, railings, mirrors and repairs.'}
+        </p>
+        <p class="footer-area" style="margin-top:1rem">
+          <Icon name="map" size={16} />
+          <span>{isAr ? 'نخدم مدينة الرياض فقط' : 'Serving Riyadh only'}</span>
+        </p>
+      </div>
+
+      <div>
+        <h3>{isAr ? 'الخدمات' : 'Services'}</h3>
+        <ul class="footer-links">
+          {SERVICES.map((s) => (
+            <li><a href={ROUTES[s.id][lang]}>{isAr ? serviceLabel(s.id) : serviceLabelEn(s.id)}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3>{isAr ? 'روابط مهمة' : 'Important links'}</h3>
+        <ul class="footer-links">
+          <li><a href={ROUTES.projects[lang]}>{isAr ? 'معرض الأعمال' : 'Projects'}</a></li>
+          <li><a href={ROUTES.pricing[lang]}>{isAr ? 'دليل الأسعار' : 'Price guide'}</a></li>
+          <li><a href={ROUTES.about[lang]}>{isAr ? 'من نحن' : 'About us'}</a></li>
+          <li><a href={ROUTES.privacy[lang]}>{isAr ? 'سياسة الخصوصية' : 'Privacy policy'}</a></li>
+          {alternateHref && (
+            <li><a href={alternateHref} hreflang={isAr ? 'en' : 'ar'}>{isAr ? 'English version' : 'النسخة العربية'}</a></li>
+          )}
+        </ul>
+      </div>
+
+      <div>
+        <h3>{isAr ? 'تواصل معنا' : 'Contact'}</h3>
+        <ul class="footer-links">
+          <li>
+            <a href={BUSINESS.telHref}>
+              <Icon name="phone" size={16} /> {isAr ? 'اتصال مباشر' : 'Call directly'}
+            </a>
+          </li>
+          <li>
+            <a href={whatsappHref(lang)} target="_blank" rel="noopener noreferrer">
+              <Icon name="whatsapp" size={16} /> {isAr ? 'واتساب' : 'WhatsApp'}
+            </a>
+          </li>
+        </ul>
+        <p dir="ltr" class="footer-phone">{BUSINESS.phoneDisplay}</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {year} {isAr ? BUSINESS.nameAr : BUSINESS.nameEn} — {isAr ? 'الرياض، المملكة العربية السعودية' : 'Riyadh, Saudi Arabia'}</p>
+      <p>
+        <a href={ROUTES.privacy[lang]}>{isAr ? 'سياسة الخصوصية' : 'Privacy policy'}</a>
+      </p>
+    </div>
+  </div>
+</footer>

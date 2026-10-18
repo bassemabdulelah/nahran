@@ -1,0 +1,129 @@
+---
+import '../styles/global.css';
+import '@fontsource/tajawal/400.css';
+import '@fontsource/tajawal/500.css';
+import '@fontsource/tajawal/700.css';
+import '@fontsource/tajawal/800.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+
+import Seo from '../components/Seo.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { ROUTES, BUSINESS, LOCALES, url, type RouteId, type Lang } from '../config/site';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  routeId: RouteId;
+  /** Current path; defaults to the canonical path for routeId + lang. */
+  path?: string;
+  image?: string;
+  type?: string;
+  noindex?: boolean;
+}
+
+const { lang, title, description, routeId, image, type, noindex = false } = Astro.props;
+
+const locale = LOCALES[lang];
+const otherLang: Lang = lang === 'ar' ? 'en' : 'ar';
+const currentPath = Astro.props.path ?? ROUTES[routeId][lang];
+const alternateHref = ROUTES[routeId][otherLang];
+const isAr = lang === 'ar';
+
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: isAr ? BUSINESS.nameAr : BUSINESS.nameEn,
+  alternateName: isAr ? BUSINESS.nameEn : BUSINESS.nameAr,
+  url: url('/'),
+  areaServed: {
+    '@type': 'City',
+    name: isAr ? BUSINESS.cityAr : BUSINESS.cityEn,
+  },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: BUSINESS.phoneE164,
+    contactType: 'customer service',
+    areaServed: 'SA',
+    availableLanguage: ['Arabic', 'English'],
+  },
+};
+
+const site = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: isAr ? BUSINESS.nameAr : BUSINESS.nameEn,
+  url: url(lang === 'ar' ? '/' : '/en/'),
+  inLanguage: [locale.htmlLang],
+};
+---
+<!doctype html>
+<html lang={lang === 'ar' ? 'ar' : 'en'} dir={locale.dir} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0F1A2C" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <Seo
+      title={title}
+      description={description}
+      lang={lang}
+      path={currentPath}
+      alternatePath={alternateHref}
+      image={image}
+      type={type}
+      noindex={noindex}
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(org)} />
+    <script type="application/ld+json" set:html={JSON.stringify(site)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{isAr ? 'تجاوز إلى المحتوى' : 'Skip to content'}</a>
+    <Header lang={lang} currentPath={currentPath} alternateHref={alternateHref} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} alternateHref={alternateHref} />
+
+    <script>
+      // Mobile navigation toggle — no dependency, works without GSAP.
+      const toggle = document.querySelector('[data-nav-toggle]');
+      const nav = document.querySelector('[data-nav]');
+      const root = document.documentElement;
+      root.classList.remove('no-js');
+      if (toggle && nav) {
+        toggle.addEventListener('click', () => {
+          const open = nav.toggleAttribute('data-open');
+          toggle.setAttribute('aria-expanded', String(open));
+          toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        });
+        // Close on link click (mobile).
+        nav.addEventListener('click', (e) => {
+          const el = e.target as HTMLElement;
+          if (el.closest('a') && nav.hasAttribute('data-open')) {
+            nav.removeAttribute('data-open');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+        // Escape closes.
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && nav.hasAttribute('data-open')) {
+            nav.removeAttribute('data-open');
+            toggle.setAttribute('aria-expanded', 'false');
+            (toggle as HTMLElement).focus();
+          }
+        });
+      }
+    </script>
+    <script>
+      import { initMotion } from '../scripts/motion';
+      initMotion();
+    </script>
+  </body>
+</html>

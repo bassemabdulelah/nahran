@@ -1,0 +1,28 @@
+{
+  "name": "zijaj-sekreet-riyadh",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.2.5",
+    "@fontsource/tajawal": "^5.2.5",
+    "astro": "^7.4.0",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.27"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.6",
+    "@types/node": "^26.6.5",
+    "typescript": "^5.9.2"
+  }
+}

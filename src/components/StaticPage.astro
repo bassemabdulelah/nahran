@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import FaqList from '../components/FaqList.astro';
+import ContactActions from '../components/ContactActions.astro';
+import type { PageContent } from '../data/pages';
+import { ROUTES, type Lang, type RouteId } from '../config/site';
+
+interface Props {
+  lang: Lang;
+  routeId: RouteId;
+  content: PageContent;
+  /** Optional title shown in the breadcrumb (defaults to the H1). */
+  crumbTitle?: string;
+}
+
+const { lang, routeId, content, crumbTitle } = Astro.props;
+const isAr = lang === 'ar';
+const home = ROUTES.home[lang];
+---
+<BaseLayout lang={lang} title={content.metaTitle} description={content.metaDescription} routeId={routeId}>
+  <Breadcrumbs
+    lang={lang}
+    items={[
+      { label: isAr ? 'الرئيسية' : 'Home', href: home },
+      { label: crumbTitle ?? content.h1 },
+    ]}
+  />
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="stack" style="max-width:820px">
+        <span class="eyebrow">{isAr ? 'زجاج سكريت — الرياض' : 'Glass — Riyadh'}</span>
+        <h1>{content.h1}</h1>
+        {content.intro.map((p) => <p class="lede">{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--soft">
+    <div class="container">
+      <div class="prose">
+        <slot />
+        {content.sections.map((s) => (
+          <div class="svc-block">
+            <h2>{s.heading}</h2>
+            {s.paragraphs?.map((p) => <p>{p}</p>)}
+            {s.list && (
+              <ul class="info-list">
+                {s.list.map((li) => <li>{li}</li>)}
+              </ul>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {content.faqs && content.faqs.length > 0 && (
+    <FaqList
+      items={content.faqs}
+      lang={lang}
+      heading={isAr ? 'أسئلة شائعة' : 'Frequently asked questions'}
+    />
+  )}
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <div>
+          <h2>{isAr ? 'هل لديك سؤال أو مشروع؟' : 'Have a question or a project?'}</h2>
+          <p>{isAr ? 'اتصل بنا مباشرة أو راسلنا على واتساب.' : 'Call us directly or message on WhatsApp.'}</p>
+        </div>
+        <ContactActions lang={lang} />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" width="1200" height="750">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F1A2C"/>
+      <stop offset="0.55" stop-color="#16263f"/>
+      <stop offset="1" stop-color="#0b1524"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="0.5" stop-color="#00B4D8" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0.2">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0V60" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="750" fill="url(#bg)"/>
+  <rect width="1200" height="750" fill="url(#grid)"/>
+  <circle cx="300" cy="600" r="240" fill="#00B4D8" opacity="0.25"/><rect x="130" y="130" width="471" height="470" rx="10" fill="url(#glass)" stroke="#00B4D8" stroke-opacity="0.55" stroke-width="2"/><rect x="205.36" y="130" width="65.94000000000001" height="470" fill="url(#sheen)" opacity="0.5"/><rect x="619" y="130" width="471" height="470" rx="10" fill="url(#glass)" stroke="#00B4D8" stroke-opacity="0.55" stroke-width="2"/><rect x="694.36" y="130" width="65.94000000000001" height="470" fill="url(#sheen)" opacity="0.5"/>
+    <rect x="640" y="180" width="330" height="420" rx="12" fill="none" stroke="#C9A94E" stroke-opacity="0.6" stroke-width="2"/>
+    <line x1="820" y1="240" x2="820" y2="560" stroke="#fff" stroke-opacity="0.5" stroke-width="8" stroke-linecap="round"/>
+  <g opacity="0.9">
+    <rect x="0" y="744" width="1200" height="6" fill="#C9A94E" opacity="0.5"/>
+  </g>
+  
+</svg>

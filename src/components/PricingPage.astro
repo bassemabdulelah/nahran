@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ContactActions from '../components/ContactActions.astro';
+import FaqList from '../components/FaqList.astro';
+import Icon from '../components/Icon.astro';
+import { ROUTES, type Lang } from '../config/site';
+import { PRICING } from '../data/pages';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+const c = PRICING[lang];
+---
+<BaseLayout lang={lang} title={c.metaTitle} description={c.metaDescription} routeId="pricing">
+  <Breadcrumbs
+    lang={lang}
+    items={[
+      { label: isAr ? 'الرئيسية' : 'Home', href: ROUTES.home[lang] },
+      { label: c.title },
+    ]}
+  />
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="stack" style="max-width:840px">
+        <span class="eyebrow">{isAr ? 'دليل عملي' : 'Practical guide'}</span>
+        <h1>{c.h1}</h1>
+        {c.intro.map((p) => <p class="lede">{p}</p>)}
+        <p class="badge badge--gold" style="align-self:flex-start">
+          <Icon name="shield" size={15} />
+          {isAr ? 'لا ننشر أسعارًا ثابتة مضللة' : 'No misleading fixed prices'}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--soft">
+    <div class="container">
+      <div class="section-head">
+        <h2>{isAr ? 'العوامل الستة التي تحدد السعر' : 'The six factors that set the price'}</h2>
+      </div>
+      <div class="grid grid--3">
+        {c.factors.map((f) => (
+          <div class="factor" data-reveal>
+            <h3><Icon name="check" size={18} /> {f.title}</h3>
+            <p>{f.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="prose">
+        {c.sections.map((s) => (
+          <div class="svc-block">
+            <h2>{s.heading}</h2>
+            {s.paragraphs?.map((p) => <p>{p}</p>)}
+            {s.list && (
+              <ul class="info-list">
+                {s.list.map((li) => <li>{li}</li>)}
+              </ul>
+            )}
+          </div>
+        ))}
+      </div>
+      <div class="cluster" style="margin-top:1.6rem">
+        <a class="btn btn--outline" href={ROUTES.projects[lang]}>
+          {isAr ? 'شاهد أمثلة الأعمال' : 'See our work'}
+        </a>
+        <a class="btn btn--outline" href={ROUTES.about[lang]}>
+          {isAr ? 'تعرّف علينا' : 'About us'}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {c.faqs && <FaqList items={c.faqs} lang={lang} schema={true} />}
+
+  <section class="section section--soft">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <div>
+          <h2>{isAr ? 'اطلب تقديرًا واضحًا لمشروعك' : 'Get a clear estimate for your project'}</h2>
+          <p>{isAr
+            ? 'اتصل أو راسلنا على واتساب مع المقاس وصور المكان.'
+            : 'Call or message on WhatsApp with the size and photos of your space.'}</p>
+        </div>
+        <ContactActions lang={lang} />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

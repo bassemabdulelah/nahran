@@ -1,0 +1,175 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from './Icon.astro';
+import ServiceCard from './ServiceCard.astro';
+import FaqList from './FaqList.astro';
+import ContactActions from './ContactActions.astro';
+import { SERVICES } from '../data/services';
+import { BUSINESS, ROUTES, type Lang } from '../config/site';
+import { HOME } from '../data/home';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+const c = HOME[lang];
+---
+<BaseLayout lang={lang} title={c.metaTitle} description={c.metaDescription} routeId="home">
+  {/* Hero */}
+  <section class="hero">
+    <div class="container hero-inner">
+      <div>
+        <p class="eyebrow" data-hero>{c.eyebrow}</p>
+        <h1 data-hero>{c.h1}</h1>
+        <p class="lede" data-hero>{c.lede}</p>
+        <div class="btn-row" data-hero>
+          <a class="btn btn--primary" href={BUSINESS.telHref}>
+            <Icon name="phone" size={18} /> {isAr ? 'اتصال مباشر' : 'Call now'}
+          </a>
+          <a class="btn btn--whatsapp" href={`https://wa.me/${BUSINESS.whatsappNumber}?text=${encodeURIComponent(isAr ? BUSINESS.whatsappMessageAr : BUSINESS.whatsappMessageEn)}`} target="_blank" rel="noopener noreferrer">
+            <Icon name="whatsapp" size={18} /> {isAr ? 'واتساب' : 'WhatsApp'}
+          </a>
+        </div>
+        <ul class="hero-badges" style="margin-top:1.6rem">
+          {c.badges.map((b) => (
+            <li><Icon name="check" size={16} /> <span>{b}</span></li>
+          ))}
+        </ul>
+      </div>
+      <div class="hero-visual">
+        <img
+          src="/images/hero.svg"
+          alt={isAr ? 'واجهة زجاجية معمارية توضيحية' : 'Illustrative architectural glass facade'}
+          width="1200"
+          height="900"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+    </div>
+  </section>
+
+  {/* Services */}
+  <section class="section" aria-labelledby="services">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <span class="eyebrow">{isAr ? 'خدماتنا' : 'Our services'}</span>
+        <h2 id="services" data-reveal>{isAr ? 'خدمات الزجاج السكريت في الرياض' : 'Tempered glass services in Riyadh'}</h2>
+        <p data-reveal>{c.servicesIntro}</p>
+      </div>
+      <div class="grid grid--3">
+        {SERVICES.map((s) => <ServiceCard service={s} lang={lang} />)}
+      </div>
+    </div>
+  </section>
+
+  {/* Why */}
+  <section class="section section--dark" aria-labelledby="why">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">{isAr ? 'لماذا نحن' : 'Why choose us'}</span>
+        <h2 id="why" data-reveal>{isAr ? 'عمل واضح من أول سؤال حتى التسليم' : 'Clear work, from your first question to handover'}</h2>
+      </div>
+      <div class="grid grid--2">
+        {c.why.map((w) => (
+          <div class="feature" data-reveal>
+            <span class="feature-icon"><Icon name={w.icon} size={22} /></span>
+            <div>
+              <h3>{w.title}</h3>
+              <p>{w.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Projects preview */}
+  <section class="section" aria-labelledby="work">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">{isAr ? 'أعمالنا' : 'Our work'}</span>
+        <h2 id="work" data-reveal>{isAr ? 'نماذج من تنفيذنا في الرياض' : 'Examples of our work in Riyadh'}</h2>
+        <p data-reveal>{isAr
+          ? 'هذه مساحات مخصّصة لصور الأعمال الحقيقية. لم تُضف بعد، وسنوضّح ذلك دائمًا بدلًا من استخدام صور عامة.'
+          : 'These are reserved spaces for real project photos. They have not been added yet — we say so rather than use stock images.'}</p>
+      </div>
+      <div class="grid grid--3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <figure class="card card--interactive project-card" data-reveal data-reveal-delay={String(i * 0.05)}>
+            <img src="/images/placeholder-project.svg" alt={isAr ? 'مساحة مخصّصة لصورة عمل حقيقي' : 'Reserved space for a real project photo'} width="800" height="500" loading="lazy" decoding="async" />
+            <figcaption>
+              <strong>{isAr ? 'بانتظار الصورة الحقيقية' : 'Awaiting a real photo'}</strong>
+              <span>{isAr ? 'سيتم تحديثها من صور أعمالنا' : 'Will be updated from our own work'}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+      <div class="cluster" style="margin-top:1.6rem">
+        <a class="btn btn--outline" href={ROUTES.projects[lang]}>
+          {isAr ? 'زيارة معرض الأعمال' : 'Visit the gallery'}
+          <Icon name="arrow" size={17} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* Process */}
+  <section class="section section--soft" aria-labelledby="process">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">{isAr ? 'خطوات العمل' : 'How it works'}</span>
+        <h2 id="process" data-reveal>{isAr ? 'كيف نسير معك في الطلب' : 'How we handle your request'}</h2>
+      </div>
+      <div class="steps">
+        {c.process.map((p) => (
+          <div class="step" data-reveal>
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Pricing preview */}
+  <section class="section" aria-labelledby="pricing">
+    <div class="container">
+      <div class="grid grid--2" style="align-items:center">
+        <div class="stack">
+          <span class="eyebrow">{isAr ? 'الأسعار' : 'Pricing'}</span>
+          <h2 id="pricing" data-reveal>{isAr ? 'السعر يتبع التفاصيل، لا العكس' : 'The price follows the details'}</h2>
+          <p class="muted" data-reveal>{c.pricingIntro}</p>
+          <div class="btn-row">
+            <a class="btn btn--outline" href={ROUTES.pricing[lang]}>
+              {isAr ? 'قراءة دليل الأسعار' : 'Read the price guide'}
+              <Icon name="arrow" size={17} />
+            </a>
+          </div>
+        </div>
+        <ul class="info-list" style="font-size:1rem">
+          {c.priceFactors.map((p) => <li>{p}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {/* FAQ */}
+  <FaqList items={c.faqs} lang={lang} schema={true} heading={isAr ? 'أسئلة نُسأل عنها كثيرًا' : 'Questions we are often asked'} />
+
+  {/* Final CTA */}
+  <section class="section">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <div>
+          <h2>{isAr ? 'جاهز لتبدأ مشروعك الزجاجي في الرياض؟' : 'Ready to start your glass project in Riyadh?'}</h2>
+          <p>{isAr
+            ? 'اتصل بنا مباشرة أو راسلنا على واتساب، وأخبرنا بالخدمة والمقاس وصور المكان إن أمكن.'
+            : 'Call us directly or message on WhatsApp with the service, the size and photos if you have them.'}</p>
+        </div>
+        <ContactActions lang={lang} />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

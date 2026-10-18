@@ -1,0 +1,24 @@
+---
+import { BUSINESS, whatsappHref, type Lang } from '../config/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+  variant?: 'solid' | 'dark' | 'compact';
+  note?: string;
+}
+
+const { lang, variant = 'solid', note } = Astro.props;
+const isAr = lang === 'ar';
+---
+<div class:list={['contact-actions', `contact-actions--${variant}`]}>
+  <a class="btn btn--dark" href={BUSINESS.telHref}>
+    <Icon name="phone" size={18} />
+    <span>{isAr ? 'اتصال مباشر' : 'Call now'}</span>
+  </a>
+  <a class="btn btn--whatsapp" href={whatsappHref(lang)} target="_blank" rel="noopener noreferrer">
+    <Icon name="whatsapp" size={18} />
+    <span>{isAr ? 'تواصل عبر واتساب' : 'Chat on WhatsApp'}</span>
+  </a>
+</div>
+{note && <p class="contact-note">{note}</p>}
