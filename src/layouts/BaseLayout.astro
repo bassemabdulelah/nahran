@@ -19,7 +19,6 @@ interface Props {
   title: string;
   description: string;
   routeId: RouteId;
-  /** Current path; defaults to the canonical path for routeId + lang. */
   path?: string;
   image?: string;
   type?: string;
@@ -40,26 +39,11 @@ const org = {
   name: isAr ? BUSINESS.nameAr : BUSINESS.nameEn,
   alternateName: isAr ? BUSINESS.nameEn : BUSINESS.nameAr,
   url: url('/'),
-  areaServed: {
-    '@type': 'City',
-    name: isAr ? BUSINESS.cityAr : BUSINESS.cityEn,
-  },
-  contactPoint: {
-    '@type': 'ContactPoint',
-    telephone: BUSINESS.phoneE164,
-    contactType: 'customer service',
-    areaServed: 'SA',
-    availableLanguage: ['Arabic', 'English'],
-  },
+  areaServed: { '@type': 'City', name: isAr ? BUSINESS.cityAr : BUSINESS.cityEn },
+  contactPoint: { '@type': 'ContactPoint', telephone: BUSINESS.phoneE164, contactType: 'customer service', areaServed: 'SA', availableLanguage: ['Arabic', 'English'] },
 };
 
-const site = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: isAr ? BUSINESS.nameAr : BUSINESS.nameEn,
-  url: url(lang === 'ar' ? '/' : '/en/'),
-  inLanguage: [locale.htmlLang],
-};
+const site = { '@context': 'https://schema.org', '@type': 'WebSite', name: isAr ? BUSINESS.nameAr : BUSINESS.nameEn, url: url(lang === 'ar' ? '/' : '/en/'), inLanguage: [locale.htmlLang] };
 ---
 <!doctype html>
 <html lang={lang === 'ar' ? 'ar' : 'en'} dir={locale.dir} class="no-js">
@@ -70,60 +54,20 @@ const site = {
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <Seo
-      title={title}
-      description={description}
-      lang={lang}
-      path={currentPath}
-      alternatePath={alternateHref}
-      image={image}
-      type={type}
-      noindex={noindex}
-    />
+    <meta name="google-site-verification" content="MB-9C2aZJH-mqJxnhC2GP8ZW5OU00JLutHT5asj28PU" />
+    <Seo title={title} description={description} lang={lang} path={currentPath} alternatePath={alternateHref} image={image} type={type} noindex={noindex} />
     <script type="application/ld+json" set:html={JSON.stringify(org)} />
     <script type="application/ld+json" set:html={JSON.stringify(site)} />
   </head>
   <body>
     <a class="skip-link" href="#main">{isAr ? 'تجاوز إلى المحتوى' : 'Skip to content'}</a>
     <Header lang={lang} currentPath={currentPath} alternateHref={alternateHref} />
-    <main id="main">
-      <slot />
-    </main>
+    <main id="main"><slot /></main>
     <Footer lang={lang} alternateHref={alternateHref} />
-
     <script>
-      // Mobile navigation toggle — no dependency, works without GSAP.
-      const toggle = document.querySelector('[data-nav-toggle]');
-      const nav = document.querySelector('[data-nav]');
-      const root = document.documentElement;
-      root.classList.remove('no-js');
-      if (toggle && nav) {
-        toggle.addEventListener('click', () => {
-          const open = nav.toggleAttribute('data-open');
-          toggle.setAttribute('aria-expanded', String(open));
-          toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-        });
-        // Close on link click (mobile).
-        nav.addEventListener('click', (e) => {
-          const el = e.target as HTMLElement;
-          if (el.closest('a') && nav.hasAttribute('data-open')) {
-            nav.removeAttribute('data-open');
-            toggle.setAttribute('aria-expanded', 'false');
-          }
-        });
-        // Escape closes.
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && nav.hasAttribute('data-open')) {
-            nav.removeAttribute('data-open');
-            toggle.setAttribute('aria-expanded', 'false');
-            (toggle as HTMLElement).focus();
-          }
-        });
-      }
+      const toggle=document.querySelector('[data-nav-toggle]'); const nav=document.querySelector('[data-nav]'); const root=document.documentElement; root.classList.remove('no-js');
+      if(toggle&&nav){ toggle.addEventListener('click',()=>{const open=nav.toggleAttribute('data-open'); toggle.setAttribute('aria-expanded',String(open));}); nav.addEventListener('click',(e)=>{if(e.target.closest('a')&&nav.hasAttribute('data-open')){nav.removeAttribute('data-open');toggle.setAttribute('aria-expanded','false');}}); document.addEventListener('keydown',(e)=>{if(e.key==='Escape'&&nav.hasAttribute('data-open')){nav.removeAttribute('data-open');toggle.setAttribute('aria-expanded','false');toggle.focus();}}); }
     </script>
-    <script>
-      import { initMotion } from '../scripts/motion';
-      initMotion();
-    </script>
+    <script> import { initMotion } from '../scripts/motion'; initMotion(); </script>
   </body>
 </html>
